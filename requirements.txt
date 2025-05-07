@@ -12,3 +12,4 @@ sqlparse==0.5.3
 typing_extensions==4.13.0
 whitenoise==6.9.0
 cloudinary==1.37.0
+djangorestframework==3.15.1
