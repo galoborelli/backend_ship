@@ -15,3 +15,4 @@ cloudinary==1.37.0
 djangorestframework==3.15.1
 drf-yasg==1.21.7
 setuptools>=58.0.0
+django-cloudinary-storage>=0.3.0
