@@ -42,12 +42,11 @@ print(os.getenv("DJANGO_ALLOWED_HOSTS",'localhost'))
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  
-    # "https://frontend-resto-five.vercel.app"
+    "https://frontend-resto-five.vercel.app",  # si tu frontend está ahí
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    # "https://backendresto-production.up.railway.app",
-    # 'https://frontend-resto-five.vercel.app'
+    "https://backendship-production.up.railway.app",
 ]
 
 # Application definition
