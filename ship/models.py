@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 
 
@@ -44,10 +45,12 @@ SECTION_CHOICES = [
 class Image(models.Model):
     title = models.CharField(max_length=100)
     section = models.CharField(max_length=20, choices=SECTION_CHOICES)
-    image = models.ImageField(upload_to='images/')
+    image = CloudinaryField('image')  # Aquí se usa el CloudinaryField
     order = models.PositiveIntegerField(default=0)  # Para orden personalizado
 
     def __str__(self):
         return f"{self.section} - {self.title}"
 
-
+    # Este método extra es útil para que el admin de Django lo muestre bien
+    def image_url(self):
+        return self.image.url
