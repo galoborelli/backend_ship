@@ -35,10 +35,10 @@ class Reserve(models.Model):
 
 
 SECTION_CHOICES = [
-    ('home', 'Inicio'),
-    ('services', 'Servicios'),
-    ('about', 'Nosotros'),
-    ('gallery', 'Galería'),
+    ('hero', 'Hero'),
+    ('how-it-works', 'Hot it works'),
+    ('carrousel', 'Carrusel'),
+    ('reserve', 'Reserve'),
 ]
 
 class Image(models.Model):
