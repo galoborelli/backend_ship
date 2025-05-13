@@ -39,6 +39,10 @@ ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
 print("DJANGO_HOSTS:")
 print(os.getenv("DJANGO_ALLOWED_HOSTS",'localhost'))
+print("CLOUD_NAME:", os.getenv("CLOUD_NAME"))
+print("CLOUDINARY_API_KEY:", os.getenv("CLOUDINARY_API_KEY"))
+print("CLOUDINARY_API_SECRET:", os.getenv("CLOUDINARY_API_SECRET"))
+
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  
