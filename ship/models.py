@@ -36,16 +36,16 @@ class Reserve(models.Model):
 
 
 SECTION_CHOICES = [
-    ('hero', 'Hero'),
-    ('how-it-works', 'How it works'),
-    ('carrousel', 'Carrusel'),
-    ('reserve', 'Reserve'),
+    ('hero', 'hero'),
+    ('how-it-works', 'how it works'),
+    ('carrousel', 'carrusel'),
+    ('reserve', 'reserve'),
 ]
 
 class Image(models.Model):
     title = models.CharField(max_length=100)
     section = models.CharField(max_length=20, choices=SECTION_CHOICES)
-    image_url = models.URLField(null=True)  
+    image_url = models.URLField(max_length=200)  
     order = models.PositiveIntegerField(default=0)  # Para orden personalizado
 
     def __str__(self):

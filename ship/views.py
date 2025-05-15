@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, serializers  
 from .models import Reserve, Schedules, Image
 from .serializer import ReserveSerializer, ScheduleSerializer, ImageSerializer 
 from drf_yasg.utils import swagger_auto_schema
@@ -103,12 +103,24 @@ class GetImages(APIView):
     ))})
 
     def get(self, request, section):
+        # Reutilizar solo la validación de sección
         try:
-            images = Image.objects.get(section=section)
-            serializer = ImageSerializer(images, many=true)
+            validated_section = ImageSerializer().validate_section(section)
+        except serializers.ValidationError as e:
+            return Response({'error': str(e.detail)}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Filtrar imágenes
+        images = Image.objects.filter(section=validated_section).order_by('order')
+        serializer = ImageSerializer(images, many=True)
+        print(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get(self,request):
+        try:
+            image = Image.objects.all()
+            serializer = ImageSerializer(image,many=True)
             return Response(serializer.data)
-        except Image.DoesNotExist:
-            return Response({'error': 'No se encontraron imágenes para esta sección'}, status=404)
-    
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 

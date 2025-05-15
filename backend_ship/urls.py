@@ -20,6 +20,8 @@ from django.urls import include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from django.http import HttpResponseRedirect
+
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -33,6 +35,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('', lambda request: HttpResponseRedirect('/admin/')),
     path('admin/', admin.site.urls),
     path('api/', include('ship.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),

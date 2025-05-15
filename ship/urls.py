@@ -5,5 +5,5 @@ urlpatterns = [
     path('reserves/', ReserveListCreateAPIView.as_view(), name='reserves'),
     path('reserves/<int:id>/', ReserveDetailAPIView.as_view(), name='reserve-detail'),
     path('reserves/<str:date>/',ReserveAvailabilityAPIView.as_view(), name='reserve-availability'),
-    path('images/<str:section>', GetImages.as_view(), name='image'),
+    path('images/', GetImages.as_view(), name='image'),
 ]
