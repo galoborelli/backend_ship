@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Reserve, Schedules
-from .serializer import ReserveSerializer, ScheduleSerializer
+from .models import Reserve, Schedules, Image
+from .serializer import ReserveSerializer, ScheduleSerializer, ImageSerializer 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from datetime import datetime
@@ -23,6 +23,9 @@ class ReserveListCreateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 class ReserveAvailabilityAPIView(APIView):
     @swagger_auto_schema(responses={200: ScheduleSerializer(many=True)})
@@ -87,4 +90,25 @@ class ReserveDetailAPIView(APIView):
 
 
 
+
+class GetImages(APIView):
+    @swagger_auto_schema(responses={200: openapi.Response('Success', openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'title': openapi.Schema(type=openapi.TYPE_STRING),
+            'section': openapi.Schema(type=openapi.TYPE_STRING),
+            'image_url': openapi.Schema(type=openapi.TYPE_STRING),
+            'order': openapi.Schema(type=openapi.TYPE_INTEGER),
+        }
+    ))})
+
+    def get(self, request, section):
+        try:
+            images = Image.objects.get(section=section)
+            serializer = ImageSerializer(images, many=true)
+            return Response(serializer.data)
+        except Image.DoesNotExist:
+            return Response({'error': 'No se encontraron imágenes para esta sección'}, status=404)
+    
+    
 

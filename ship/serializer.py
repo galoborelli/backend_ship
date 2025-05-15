@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Reserve, Schedules
+from .models import Reserve, Schedules, Image
 import datetime, re
 
 class ReserveSerializer(serializers.ModelSerializer):
@@ -53,3 +53,19 @@ class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedules
         fields = '__all__'
+
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = '__all__'
+    def validate_section(self, section):
+        # Validar que la sección esté en las opciones definidas
+        valid_sections = ['hero', 'how-it-works', 'carrousel', 'reserve']
+        if section not in valid_sections:
+            raise serializers.ValidationError(f"Sección inválida. Debe ser una de: {', '.join(valid_sections)}.")
+        return section
+    
+    
+    

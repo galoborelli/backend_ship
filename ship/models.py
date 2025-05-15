@@ -49,7 +49,7 @@ class Image(models.Model):
     order = models.PositiveIntegerField(default=0)  # Para orden personalizado
 
     def __str__(self):
-        return f"{self.section} - {self.title}"
+        return f"{self.section} - {self.title} {self.image_url}"
 
     # Este método extra es útil para que el admin de Django lo muestre bien
     def image(self):
