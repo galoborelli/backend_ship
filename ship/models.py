@@ -21,15 +21,14 @@ class Schedules(models.Model):
 class Reserve(models.Model):
     id_reserve = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    email = models.EmailField()
-    phone = models.CharField(max_length=15)
-    date_reserve = models.DateField()
-    time_reserve = models.ForeignKey(Schedules, on_delete=models.CASCADE)
-    cuantity = models.IntegerField()
+    contact = models.CharField("Email o Teléfono", max_length=100)
+    date_selected = models.DateField()
+    time_selected = models.ForeignKey(Schedules, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
     message = models.TextField(blank=True, null=True)
     
     def __str__(self):
-        return f"{self.name} - {self.date_reserve} {self.time_reserve}"
+        return f"{self.name} - {self.date_selected} {self.time_selected}"
 
 
 

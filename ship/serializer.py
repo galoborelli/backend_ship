@@ -6,12 +6,7 @@ class ReserveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reserve
         fields = '__all__'
-    def validate_email(self, email):
-    # Validar formato de email con expresión regular
-     email_regex = r"(^[\w\.-]+@[\w\.-]+\.\w+$)"
-     if not re.match(email_regex, email):
-        raise serializers.ValidationError("Formato de email inválido.")
-     return email
+
 
     def validate_name(self, name):
         if len(name) < 3:
@@ -23,20 +18,23 @@ class ReserveSerializer(serializers.ModelSerializer):
         if(dateSelected < today):
             raise serializers.ValidationError("La fecha no puede ser anterior a la fecha actual.")
         return date
+    def validate_contact(self, value):
+        # Regex para email
+        email_regex = r"(^[\w\.-]+@[\w\.-]+\.\w+$)"
+        # Regex para teléfono internacional (con o sin +)
+        phone_regex = r'^(\+?\d{1,4})?\d{8,15}$'
+        
+        # Limpia espacios o guiones del número de teléfono
+        clean_value = value.replace(" ", "").replace("-", "")
 
-    def validate_phone(self, phone):
-        # Elimina espacios y guiones
-        phoneReplace = phone.replace(" ", "").replace("-", "")
-
-        # Validación por regex: acepta números con opcional +, código país y de 8 a 15 dígitos
-        pattern = r'^(\+?\d{1,4})?\d{8,15}$'
-        if not re.match(pattern, phoneReplace):
+        if re.match(email_regex, value):
+            return value  # Es un email válido
+        elif re.match(phone_regex, clean_value):
+            return clean_value  # Es un teléfono válido (sin espacios/guiones)
+        else:
             raise serializers.ValidationError(
-                "Número de teléfono inválido. Debe contener solo números, puede incluir '+' al inicio y tener entre 8 y 15 dígitos."
+                "Debe ingresar un email válido o un número de teléfono válido."
             )
-
-        return phone
-
     def validate_cuantity(self, cuantity):
         if cuantity < 1:
             raise serializers.ValidationError("La cantidad debe ser al menos 1.")

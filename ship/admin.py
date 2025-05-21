@@ -5,8 +5,8 @@ from .models import Reserve, Image, Schedules
 
 @admin.register(Reserve)
 class ReserveAdmin(admin.ModelAdmin):
-    list_display = ('id_reserve', 'name', 'date_reserve', 'email', 'phone', 'cuantity', 'message')
-    search_fields = ('id_reserve', 'name', 'date_reserve', 'email', 'phone')
+    list_display = ('id_reserve', 'name', 'date_selected', 'contact', 'quantity', 'message')
+    search_fields = ('id_reserve', 'name', 'date_selected', 'contact')
 
 
 @admin.register(Schedules)
