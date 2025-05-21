@@ -36,10 +36,10 @@ class ReserveAvailabilityAPIView(APIView):
             fecha_reserva_obj = datetime.fromisoformat(fecha_reserva)
 
             # Traemos todas las reservas en esa fecha
-            reservas_del_dia = Reserve.objects.filter(date_reserve=fecha_reserva_obj)
+            reservas_del_dia = Reserve.objects.filter(date_selected=fecha_reserva_obj)
             
             # Extraemos los tipos de turnos reservados (mañana/tarde)
-            tipos_reservados = reservas_del_dia.values_list('time_reserve__type', flat=True)
+            tipos_reservados = reservas_del_dia.values_list('time_selected__type', flat=True)
 
             # Obtenemos todos los horarios (mañana/tarde)
             todos_los_horarios = Schedules.objects.all()

@@ -46,7 +46,7 @@ print("CLOUDINARY_API_SECRET:", os.getenv("CLOUDINARY_API_SECRET"))
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  
-    "https://frontend-resto-five.vercel.app",  # si tu frontend está ahí
+    "https://frontend-ship-blond.vercel.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
