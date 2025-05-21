@@ -51,6 +51,7 @@ CORS_ALLOWED_ORIGINS = [
 
 CSRF_TRUSTED_ORIGINS = [
     "https://backendship-production.up.railway.app",
+    "https://frontend-ship-blond.vercel.app", 
 ]
 
 # Application definition
