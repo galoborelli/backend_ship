@@ -5,23 +5,22 @@ from django.db import models
 
 class Schedules(models.Model):
     TIPO_HORARIO = [
-        ('mañana', 'Mañana (8:00 a 12:00)'),
-        ('mañana', 'Mañana (9:00 a 13:00)'),
-        ('mañana', 'Mañana (10:00 a 14:00)'),
-        ('tarde', 'Tarde (13:00 a 19:00)'),
-        ('tarde', 'Tarde (14:00 a 20:00)'),
-        ('tarde', 'Tarde (14:00 a 18:00)'),
-        ('tarde', 'Tarde (15:00 a 19:00)'),
-        ('tarde', 'Tarde (16:00 a 20:00)'),
-        
+        ('mañana_1', 'Mañana (8:00 a 12:00)'),
+        ('mañana_2', 'Mañana (9:00 a 13:00)'),
+        ('mañana_3', 'Mañana (10:00 a 14:00)'),
+        ('tarde_1', 'Tarde (13:00 a 19:00)'),
+        ('tarde_2', 'Tarde (14:00 a 20:00)'),
+        ('tarde_3', 'Tarde (14:00 a 18:00)'),
+        ('tarde_4', 'Tarde (15:00 a 19:00)'),
+        ('tarde_5', 'Tarde (16:00 a 20:00)'),
     ]
 
     type = models.CharField(max_length=10, choices=TIPO_HORARIO)
     init_hour = models.TimeField()
     end_hour = models.TimeField()
 
-    def __str__(self):
-        return f"{self.get_type_display()} - {self.init_hour} a {self.end_hour }"
+def __str__(self):
+    return f"{self.get_type_display()} - {self.init_hour.strftime('%H:%M')} a {self.end_hour.strftime('%H:%M')}"
 
 
 

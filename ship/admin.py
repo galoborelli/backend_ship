@@ -12,7 +12,7 @@ class ReserveAdmin(admin.ModelAdmin):
 @admin.register(Schedules)
 class SchedulesAdmin(admin.ModelAdmin):
     list_display = ('init_hour', 'end_hour', 'type')
-    search_fields = ('id_schedule', 'date', 'time')
+    search_fields = ('type', 'init_hour', 'end_hour')
 
 
 
