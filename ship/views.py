@@ -5,7 +5,7 @@ from .models import Reserve, Schedules, Image
 from .serializer import ReserveSerializer, ScheduleSerializer, ImageSerializer 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 
@@ -27,33 +27,47 @@ class ReserveListCreateAPIView(APIView):
 
 
 
+
 class ReserveAvailabilityAPIView(APIView):
     @swagger_auto_schema(responses={200: ScheduleSerializer(many=True)})
     def get(self, *args, **kwargs):
         try:
-            # Convertir el valor de la fecha a un objeto de fecha
+            # 1. Parsear la fecha desde la URL
             fecha_reserva = kwargs['date']
-            fecha_reserva_obj = datetime.fromisoformat(fecha_reserva)
+            fecha_reserva_obj = datetime.fromisoformat(fecha_reserva).date()
 
-            # Traemos todas las reservas en esa fecha
-            reservas_del_dia = Reserve.objects.filter(date_selected=fecha_reserva_obj)
-            
-            # Extraemos los tipos de turnos reservados (mañana/tarde)
-            tipos_reservados = reservas_del_dia.values_list('time_selected__type', flat=True)
+            # 2. Obtener las reservas del día con sus horarios
+            reservas_del_dia = Reserve.objects.filter(date_selected=fecha_reserva_obj).select_related('time_selected')
+            horarios_reservados = [
+                (reserva.time_selected.init_hour, reserva.time_selected.end_hour)
+                for reserva in reservas_del_dia
+            ]
 
-            # Obtenemos todos los horarios (mañana/tarde)
+            # 3. Traer todos los horarios posibles
             todos_los_horarios = Schedules.objects.all()
 
-            # Filtramos los horarios que NO están en tipos_reservados
-            horarios_disponibles = todos_los_horarios.exclude(type__in=tipos_reservados)
+            horarios_disponibles = []
+
+            # 4. Verificamos si cada horario tiene al menos 2 horas de separación
+            for horario in todos_los_horarios:
+                disponible = True
+                for init_res, end_res in horarios_reservados:
+                    if not (
+                        horario.init_hour >= (datetime.combine(fecha_reserva_obj, end_res) + timedelta(hours=2)).time()
+                        or horario.end_hour <= (datetime.combine(fecha_reserva_obj, init_res) - timedelta(hours=2)).time()
+                    ):
+                        disponible = False
+                        break
+                if disponible:
+                    horarios_disponibles.append(horario)
 
             serializer = ScheduleSerializer(horarios_disponibles, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)    
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-
+            
 
 
 class ReserveDetailAPIView(APIView):

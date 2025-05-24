@@ -5,8 +5,15 @@ from django.db import models
 
 class Schedules(models.Model):
     TIPO_HORARIO = [
+        ('mañana', 'Mañana (8:00 a 12:00)'),
+        ('mañana', 'Mañana (9:00 a 13:00)'),
         ('mañana', 'Mañana (10:00 a 14:00)'),
         ('tarde', 'Tarde (13:00 a 19:00)'),
+        ('tarde', 'Tarde (14:00 a 20:00)'),
+        ('tarde', 'Tarde (14:00 a 18:00)'),
+        ('tarde', 'Tarde (15:00 a 19:00)'),
+        ('tarde', 'Tarde (16:00 a 20:00)'),
+        
     ]
 
     type = models.CharField(max_length=10, choices=TIPO_HORARIO)
