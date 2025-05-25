@@ -35,7 +35,26 @@ SECRET_KEY = 'django-insecure-as0btgo^9)-#4w&ec+l%%)hh3!@x75d2rnbja9t_9wnjdo5vc%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# ALLOWED HOSTS
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
+
+# STRIPE KEYS
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tucorreo@gmail.com'
+EMAIL_HOST_PASSWORD = 'tu_password_o_app_password'
+
+
+
+
 
 print("DJANGO_HOSTS:")
 print(os.getenv("DJANGO_ALLOWED_HOSTS",'localhost'))

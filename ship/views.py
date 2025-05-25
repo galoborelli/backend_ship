@@ -6,8 +6,8 @@ from .serializer import ReserveSerializer, ScheduleSerializer, ImageSerializer
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from datetime import datetime, timedelta
-
-
+import stripe
+from django.conf import settings
 
 class ReserveListCreateAPIView(APIView):
     @swagger_auto_schema(responses={200: ReserveSerializer(many=True)})
@@ -25,6 +25,48 @@ class ReserveListCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class CreateCheckoutSessionView(APIView):
+    @swagger_auto_schema(responses={200: openapi.Response('Success', openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'url': openapi.Schema(type=openapi.TYPE_STRING),
+        }
+    ))})
+    def post(self, request):
+        data = request.data
+        print("Datos recibidos para checkout:", data)
+
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                mode='payment',
+                line_items=[{
+                    'price_data': {
+                        'currency': 'eur',
+                        'unit_amount': int(data['amount']) * 100,  # precio en centavos
+                        'product_data': {
+                            'name': 'Reserva de turno',
+                        },
+                    },
+                    'quantity': 1,
+                }],
+                metadata={
+                    'id_reserve': data['id_reserve'],
+                    'name': data['name'],
+                    'contact': data['contact'],
+                    'date_selected': data['date_selected'],
+                    'time_selected': data['time_selected'],
+                    'quantity': data['quantity'],
+                    'message': data['message'],
+                },
+                success_url='https://frontend-ship-blond.vercel.app/success',
+                cancel_url='https://frontend-ship-blond.vercel.app/cancel',
+            )
+            print(f"Checkout session creada con id: {checkout_session.id}")
+            return Response({'checkout_url': checkout_session.url})
+        except Exception as e:
+            print(f"Error creando checkout session: {str(e)}")
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
