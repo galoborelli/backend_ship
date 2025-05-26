@@ -58,6 +58,7 @@ class CreateCheckoutSessionView(APIView):
                     'time_selected': data['time_selected'],
                     'quantity': data['quantity'],
                     'message': data['message'],
+                    'status': 'pending',
                 },
                 success_url='https://frontend-ship-blond.vercel.app/success',
                 cancel_url='https://frontend-ship-blond.vercel.app/cancel',

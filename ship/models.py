@@ -25,6 +25,13 @@ def __str__(self):
 
 
 class Reserve(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pendiente'),
+        ('confirmed', 'Confirmada'),
+        ('cancelled', 'Cancelada'),
+    ]
+
+
     id_reserve = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     contact = models.CharField("Email o Teléfono", max_length=100)
@@ -32,6 +39,8 @@ class Reserve(models.Model):
     time_selected = models.ForeignKey(Schedules, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     message = models.TextField(blank=True, null=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+
     
     def __str__(self):
         return f"{self.name} - {self.date_selected} {self.time_selected}"
