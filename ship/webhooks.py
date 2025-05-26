@@ -4,10 +4,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from .models import Reserve
 from django.core.mail import send_mail
+from .models import Schedules
 
 # Cargar la clave secreta y webhook directamente del entorno
 stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 endpoint_secret = os.getenv('STRIPE_WEBHOOK_SECRET')
+
+
 
 @csrf_exempt
 def stripe_webhook(request):
@@ -30,7 +33,6 @@ def stripe_webhook(request):
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
 
-        id_reserve = session.get('metadata', {}).get('id_reserve')
         name = session.get('metadata', {}).get('name')
         contact = session.get('metadata', {}).get('contact')
         date_selected = session.get('metadata', {}).get('date_selected')
@@ -38,18 +40,18 @@ def stripe_webhook(request):
         quantity = session.get('metadata', {}).get('quantity')
         message = session.get('metadata', {}).get('message')
         status = 'confirmed'
-        print(f"Checkout completado para reserva {id_reserve}")
-
-        reserve, created = Reserve.objects.get_or_create(id=id_reserve)
-        reserve.name = name
-        reserve.contact = contact
-        reserve.date_selected = date_selected
-        reserve.time_selected = time_selected
-        reserve.quantity = quantity
-        reserve.message = message
-        reserve.status = status
-        reserve.save()
-
+        
+        schedule_instance = Schedules.objects.get(id=int(time_selected))
+        # Crear una nueva reserva
+        reserve = Reserve.objects.create(
+            name=name,
+            contact=contact,
+            date_selected=date_selected,
+            time_selected=schedule_instance,  
+            quantity=quantity,
+            message=message,
+            status=status
+        )
         send_mail(
             'Reserva confirmada',
             f'Hola {name}, tu reserva para {date_selected} a las {time_selected} ha sido confirmada.',

@@ -51,7 +51,7 @@ class CreateCheckoutSessionView(APIView):
                     'quantity': 1,
                 }],
                 metadata={
-                    'id_reserve': data['id_reserve'],
+
                     'name': data['name'],
                     'contact': data['contact'],
                     'date_selected': data['date_selected'],
