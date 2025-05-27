@@ -7,6 +7,6 @@ urlpatterns = [
     path('reserves/<int:id>/', ReserveDetailAPIView.as_view(), name='reserve-detail'),
     path('reserves/<str:date>/',ReserveAvailabilityAPIView.as_view(), name='reserve-availability'),
     path('checkout/', CreateCheckoutSessionView.as_view(), name='create_checkout'),
-    path('webhooks/', stripe_webhook, name='stripe_webhook'),
+    path('webhook/', stripe_webhook, name='stripe_webhook'),
     path('images/', GetImages.as_view(), name='image'),
 ]

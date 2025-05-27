@@ -5,7 +5,7 @@ from .models import Reserve, Schedules, Image
 from .serializer import ReserveSerializer, ScheduleSerializer, ImageSerializer 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from datetime import datetime, timedelta
+from datetime import datetime
 import stripe
 from django.conf import settings
 
@@ -67,8 +67,8 @@ class CreateCheckoutSessionView(APIView):
                 metadata={
                     'id_reserve': reserve.id_reserve,
                 },
-                success_url='https://frontend-ship-blond.vercel.app/success',
-                cancel_url='https://frontend-ship-blond.vercel.app/cancel',
+                success_url=f'http://localhost:5173/success?reserve_id={reserve.id_reserve}',
+                cancel_url='http://localhost:5173/cancel',
             )
 
             print(f"Checkout session creada con id: {checkout_session.id}")
@@ -137,9 +137,9 @@ class ReserveDetailAPIView(APIView):
             return Response({'error': 'Reserva no encontrada'}, status=404)
 
     @swagger_auto_schema(request_body=ReserveSerializer)
-    def put(self, request, id):
+    def put(self, request, id_reserve):
         try:
-            reserve = Reserve.objects.get(id_reserve=id)
+            reserve = Reserve.objects.get(id_reserve=id_reserve)
         except Reserve.DoesNotExist:
             return Response({'error': 'Reserva no encontrada'}, status=404)
 

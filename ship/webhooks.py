@@ -35,7 +35,7 @@ def stripe_webhook(request):
 
         if id_reserve:
             try:
-                reserve = Reserve.objects.get(id=id_reserve)
+                reserve = Reserve.objects.get(id_reserve=id_reserve)
                 reserve.status = 'confirmed'
                 reserve.save()
 
@@ -55,7 +55,7 @@ def stripe_webhook(request):
 
         if id_reserve:
             try:
-                reserve = Reserve.objects.get(id=id_reserve)
+                reserve = Reserve.objects.get(id_reserve=id_reserve)
                 reserve.status = 'cancelled'
                 reserve.save()
             except Reserve.DoesNotExist:
