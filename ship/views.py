@@ -24,7 +24,6 @@ class ReserveListCreateAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class CreateCheckoutSessionView(APIView):
     @swagger_auto_schema(responses={200: openapi.Response('Success', openapi.Schema(
         type=openapi.TYPE_OBJECT,
@@ -37,13 +36,28 @@ class CreateCheckoutSessionView(APIView):
         print("Datos recibidos para checkout:", data)
 
         try:
+            # Obtener instancia del horario
+            schedule_instance = Schedules.objects.get(id=int(data['time_selected']))
+
+            # Crear la reserva en la base de datos con estado pendiente
+            reserve = Reserve.objects.create(
+                name=data['name'],
+                contact=data['contact'],
+                date_selected=data['date_selected'],
+                time_selected=schedule_instance,
+                quantity=data['quantity'],
+                message=data['message'],
+                status='pending'
+            )
+
+            # Crear la sesión de pago en Stripe
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 mode='payment',
                 line_items=[{
                     'price_data': {
                         'currency': 'eur',
-                        'unit_amount': int(data['amount']) * 100,  # precio en centavos
+                        'unit_amount': int(data['amount']) * 100,
                         'product_data': {
                             'name': 'Reserva de turno',
                         },
@@ -51,18 +65,12 @@ class CreateCheckoutSessionView(APIView):
                     'quantity': 1,
                 }],
                 metadata={
-
-                    'name': data['name'],
-                    'contact': data['contact'],
-                    'date_selected': data['date_selected'],
-                    'time_selected': data['time_selected'],
-                    'quantity': data['quantity'],
-                    'message': data['message'],
-                    'status': 'pending',
+                    'id_reserve': reserve.id_reserve,
                 },
                 success_url='https://frontend-ship-blond.vercel.app/success',
                 cancel_url='https://frontend-ship-blond.vercel.app/cancel',
             )
+
             print(f"Checkout session creada con id: {checkout_session.id}")
             return Response({'checkout_url': checkout_session.url})
         except Exception as e:

@@ -11,7 +11,6 @@ stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 endpoint_secret = os.getenv('STRIPE_WEBHOOK_SECRET')
 
 
-
 @csrf_exempt
 def stripe_webhook(request):
     payload = request.body
@@ -32,42 +31,35 @@ def stripe_webhook(request):
 
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
+        id_reserve = session.get('metadata', {}).get('id_reserve')
 
-        name = session.get('metadata', {}).get('name')
-        contact = session.get('metadata', {}).get('contact')
-        date_selected = session.get('metadata', {}).get('date_selected')
-        time_selected = session.get('metadata', {}).get('time_selected')
-        quantity = session.get('metadata', {}).get('quantity')
-        message = session.get('metadata', {}).get('message')
-        status = 'confirmed'
-        
-        schedule_instance = Schedules.objects.get(id=int(time_selected))
-        # Crear una nueva reserva
-        reserve = Reserve.objects.create(
-            name=name,
-            contact=contact,
-            date_selected=date_selected,
-            time_selected=schedule_instance,  
-            quantity=quantity,
-            message=message,
-            status=status
-        )
-        send_mail(
-            'Reserva confirmada',
-            f'Hola {name}, tu reserva para {date_selected} a las {time_selected} ha sido confirmada.',
-            'tuemail@dominio.com',
-            [contact],
-            fail_silently=True,
-        )
+        if id_reserve:
+            try:
+                reserve = Reserve.objects.get(id=id_reserve)
+                reserve.status = 'confirmed'
+                reserve.save()
+
+                send_mail(
+                    'Reserva confirmada',
+                    f'Hola {reserve.name}, tu reserva para {reserve.date_selected} a las {reserve.time_selected} ha sido confirmada.',
+                    'tuemail@dominio.com',
+                    [reserve.contact],
+                    fail_silently=True,
+                )
+            except Reserve.DoesNotExist:
+                print("Reserva no encontrada para confirmar")
+
     elif event['type'] == 'checkout.session.expired':
         session = event['data']['object']
-        metadata = session.get('metadata', {})
-        id_reserve = metadata.get('id_reserve')
+        id_reserve = session.get('metadata', {}).get('id_reserve')
 
-        try:
-            reserve = Reserve.objects.get(id=id_reserve)
-            reserve.status = 'cancelled'
-            reserve.save()
-        except Reserve.DoesNotExist:
-            pass  # Podés loguearlo o ignorarlo
+        if id_reserve:
+            try:
+                reserve = Reserve.objects.get(id=id_reserve)
+                reserve.status = 'cancelled'
+                reserve.save()
+            except Reserve.DoesNotExist:
+                print("Reserva no encontrada para cancelar")
+
     return HttpResponse(status=200)
+
