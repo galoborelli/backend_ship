@@ -70,6 +70,7 @@ CORS_ALLOWED_ORIGINS = [
 
 CSRF_TRUSTED_ORIGINS = [
     "https://backendship-production.up.railway.app",
+    "http://localhost:5173", 
     "https://frontend-ship-blond.vercel.app", 
 ]
 
