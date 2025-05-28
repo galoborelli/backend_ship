@@ -31,6 +31,11 @@ class Reserve(models.Model):
         ('cancelled', 'Cancelada'),
     ]
 
+    PAYMENT_METHOD_CHOICES = [
+        ('cash', 'Efectivo'),
+        ('card', 'Tarjeta'),
+    ]
+
 
     id_reserve = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -40,7 +45,7 @@ class Reserve(models.Model):
     quantity = models.IntegerField()
     message = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-
+    method_payment = models.CharField(max_length=10, choices=PAYMENT_METHOD_CHOICES, default='cash')
     
     def __str__(self):
         return f"{self.name} - {self.date_selected} {self.time_selected}"

@@ -24,6 +24,9 @@ class ReserveListCreateAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+
 class CreateCheckoutSessionView(APIView):
     @swagger_auto_schema(responses={200: openapi.Response('Success', openapi.Schema(
         type=openapi.TYPE_OBJECT,
@@ -47,6 +50,7 @@ class CreateCheckoutSessionView(APIView):
                 time_selected=schedule_instance,
                 quantity=data['quantity'],
                 message=data['message'],
+                method_payment=data['method_payment'],
                 status='pending'
             )
 
@@ -76,6 +80,20 @@ class CreateCheckoutSessionView(APIView):
         except Exception as e:
             print(f"Error creando checkout session: {str(e)}")
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class CreateReservationCash(APIView):
+    @swagger_auto_schema(request_body=ReserveSerializer)
+    def post(self, request):
+        serializer = ReserveSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 
