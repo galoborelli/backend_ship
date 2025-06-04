@@ -61,6 +61,9 @@ SECTION_CHOICES = [
     ('reserve', 'reserve'),
 ]
 
+
+
+
 class Image(models.Model):
     title = models.CharField(max_length=100)
     section = models.CharField(max_length=20, choices=SECTION_CHOICES)
@@ -73,3 +76,19 @@ class Image(models.Model):
     # Este método extra es útil para que el admin de Django lo muestre bien
     def image(self):
         return self.image_url
+
+
+
+
+class Video(models.Model):
+    SECTION_CHOICES = [
+        ('ship', 'ship'),
+    ]
+
+    title  = models.CharField(max_length=100)
+    video_url = models.URLField(max_length=200)
+    section = models.CharField(max_length=20, choices=SECTION_CHOICES)
+    def __str__(self):
+        return self.title
+
+   

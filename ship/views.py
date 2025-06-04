@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, serializers  
-from .models import Reserve, Schedules, Image
-from .serializer import ReserveSerializer, ScheduleSerializer, ImageSerializer 
+from .models import Reserve, Schedules, Image, Video
+from .serializer import ReserveSerializer, ScheduleSerializer, ImageSerializer, VideoSerializer 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from datetime import datetime
@@ -212,3 +212,20 @@ class GetImages(APIView):
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 
+class GetVideos(APIView):
+    @swagger_auto_schema(responses={200: openapi.Response('Success', openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'title': openapi.Schema(type=openapi.TYPE_STRING),
+            'section': openapi.Schema(type=openapi.TYPE_STRING),
+            'image_url': openapi.Schema(type=openapi.TYPE_STRING),
+            'order': openapi.Schema(type=openapi.TYPE_INTEGER),
+        }
+    ))})
+    def get(self,request):
+        try:
+            video = Video.objects.all()
+            serializer = VideoSerializer(video, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)    

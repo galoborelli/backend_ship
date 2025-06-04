@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ReserveListCreateAPIView, ReserveDetailAPIView, ReserveAvailabilityAPIView, GetImages, CreateCheckoutSessionView, CreateReservationCash
+from .views import ReserveListCreateAPIView, ReserveDetailAPIView, ReserveAvailabilityAPIView, GetImages, CreateCheckoutSessionView, CreateReservationCash, GetVideos
 from .webhooks import stripe_webhook
 
 urlpatterns = [
@@ -10,4 +10,5 @@ urlpatterns = [
     path('checkout_cash/', CreateReservationCash.as_view(), name='create_reservation_cash'),
     path('webhook/', stripe_webhook, name='stripe_webhook'),
     path('images/', GetImages.as_view(), name='image'),
+    path('videos/', GetVideos.as_view(), name='video'),
 ]

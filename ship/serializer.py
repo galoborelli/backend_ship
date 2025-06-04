@@ -1,12 +1,28 @@
 from rest_framework import serializers
-from .models import Reserve, Schedules, Image
+from .models import Reserve, Schedules, Image, Video
 import datetime, re
 
+
+class ScheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Schedules
+        fields = ['id', 'type', 'init_hour', 'end_hour']
+
+
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = Video
+        fields = '__all__'
+
+
 class ReserveSerializer(serializers.ModelSerializer):
+    init_hour = serializers.TimeField(source='time_selected.init_hour', read_only=True)
+    end_hour = serializers.TimeField(source='time_selected.end_hour', read_only=True)
+    
     class Meta:
         model = Reserve
         fields = '__all__'
-        read_only_fields = ['status']  # ✅ Opcional: evita que lo modifiquen desde el front
+        read_only_fields = ['status']
 
     def validate_name(self, name):
         if len(name.strip()) < 3:
@@ -44,11 +60,6 @@ class ReserveSerializer(serializers.ModelSerializer):
         return time_selected
 
 
-
-class ScheduleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Schedules
-        fields = '__all__'
 
 
 
